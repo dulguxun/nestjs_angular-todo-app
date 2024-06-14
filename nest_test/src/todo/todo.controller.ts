@@ -31,7 +31,7 @@ export class TodoController {
   updateTask(@Body() taskData: { id: number, username: string; mail: string; title: string }): { message: string; } {
     this.todoService.updateTask(taskData);
 
-    return { message: 'Task added successfully' }; 
+    return { message: 'Task updated successfully' }; 
   }
 
   @Post('/delete')
