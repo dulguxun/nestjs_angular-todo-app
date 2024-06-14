@@ -11,7 +11,7 @@ interface Task {
 @Component({
   selector: 'app-todo',
   templateUrl: './todo.component.html',
-  // styleUrls: ['./profile.component.css']
+  styleUrls: ['./todo.component.css']
 })
 export class TodoComponent implements OnInit {
   form!: FormGroup;
@@ -37,7 +37,11 @@ export class TodoComponent implements OnInit {
   fetchTasks(): void {
     this.todoService.fetchTasks().subscribe(
       (tasks) => {
-        this.tasks = tasks;
+        this.tasks = tasks.map((task, index) =>(
+          {
+            ...task,
+            id: index + 1 //id
+          }));
       },
       (error) => {
         console.error("Error fetching tasks:", error);
@@ -52,27 +56,27 @@ export class TodoComponent implements OnInit {
       // Update task
       this.todoService.updateTask(this.selectedTask.id, title).subscribe(
         (res) => {
-          console.log("POST request successful:", res);
+          console.log("Task update successful:", res);
           // After adding a task, fetch updated tasks
           this.selectedTask = null;
           this.form.get('title')?.setValue('');
           this.fetchTasks();
         },
         (error) => {
-          console.error("Error in POST request:", error);
+          console.error("Error updating task", error);
         }
       );  
     }
     else {
       this.todoService.addTask(title).subscribe(
         (res) => {
-          console.log("POST request successful:", res);
+          console.log("Task addition successful:", res);
           // After adding a task, fetch updated tasks
           this.form.get('title')?.setValue('');
           this.fetchTasks();
         },
         (error) => {
-          console.error("Error in POST request:", error);
+          console.error("Error adding task:", error);
         }
       );  
     }
@@ -82,12 +86,12 @@ export class TodoComponent implements OnInit {
     // Assuming you have an API endpoint to delete a task
     this.todoService.deleteTask(id).subscribe(
       (res) => {
-        console.log("DELETE request successful:", res);
+        console.log("Task deletion successful:", res);
         // After deleting a task, fetch updated tasks
         this.fetchTasks();
       },
       (error) => {
-        console.error("Error in DELETE request:", error);
+        console.error("Error deleting task:", error);
       }
     );
   }
